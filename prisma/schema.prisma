@@ -19,18 +19,22 @@ model User {
 }
 
 model Event {
-  id            Int      @id @default(autoincrement())
-  host          User     @relation("HostEvents", fields: [hostId], references: [id])
-  hostId        Int      @map("host_id")
-  titulo        String
-  descricao     String?
-  dataHora      DateTime @map("data_hora")
-  localTexto    String   @map("local_texto")
-  capacidadeMax Int      @map("capacidade_max")
-  criadoEm      DateTime @default(now()) @map("criado_em")
+  id             Int       @id @default(autoincrement())
+  host   User @relation("HostEvents", fields: [hostId], references: [id])
+  hostId         Int
+  titulo         String
+  descricao      String?
+  dataHora       DateTime
+  localTexto     String
+  capacidadeMax  Int
+  criadoEm       DateTime  @default(now())
 
-  rsvps RSVP[]
+  // NOVO:
+  contactUrl     String?   // link opcional: IG, WhatsApp, site, etc.
+
+  rsvps          RSVP[]
 }
+
 
 model RSVP {
   id        Int      @id @default(autoincrement())
