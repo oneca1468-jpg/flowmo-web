@@ -20,6 +20,7 @@ export default function HostPage() {
   const [descricao, setDescricao] = useState('');
   const [dataHora, setDataHora] = useState('');
   const [localTexto, setLocalTexto] = useState('');
+  const [contactUrl, setContactUrl] = useState('');
   const [capacidadeMax, setCapacidadeMax] = useState('10');
   const [message, setMessage] = useState<string | null>(null);
   const [events, setEvents] = useState<HostEvent[]>([]);
@@ -70,6 +71,7 @@ export default function HostPage() {
           dataHora,
           localTexto,
           capacidadeMax,
+          contactUrl: contactUrl || null,
         }),
       });
 
@@ -80,11 +82,10 @@ export default function HostPage() {
         return;
       }
 
-      setMessage(`Evento criado com ID ${json.event.id}.`);
+     setMessage(`Evento criado com ID ${json.id}. Link: ${json.link}`);
 
-      // guardar host no localStorage
-      window.localStorage.setItem('flowmo_host_email', hostEmail);
-      window.localStorage.setItem('flowmo_host_name', hostName);
+window.localStorage.setItem('flowmo_host_email', hostEmail);
+window.localStorage.setItem('flowmo_host_name', hostName || '');
 
       // limpa campos de evento
       setTitulo('');
@@ -135,6 +136,19 @@ export default function HostPage() {
               />
             </div>
           </div>
+
+          <div className="space-y-1">
+              <label className="text-xs text-zinc-300">
+                Link de contacto (Instagram, WhatsApp, etc.)
+              </label>
+              <input
+                type="text"
+                className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-zinc-400"
+                placeholder="https://instagram.com/teu_run_club ou https://wa.me/..."
+                value={contactUrl}
+                onChange={(e) => setContactUrl(e.target.value)}
+              />
+            </div>  
 
           <hr className="my-4 opacity-40" />
 

@@ -29,8 +29,16 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Deploy na Vercel + Neon
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Para que as APIs (`/api/events`, `/api/host/events`, etc.) funcionem na Vercel é indispensável que o Prisma consiga falar com o Postgres do Neon:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Variáveis de ambiente**
+   - `DATABASE_URL`: usa a connection string do *pooler* do Neon e certifica-te de que não tem aspas. O código normaliza automaticamente `sslmode=require`, `pgbouncer=true`, `connect_timeout=15` e remove `channel_binding=require` (que não é suportado pelo driver do Prisma).
+   - `NEXT_PUBLIC_BASE_URL`: define para `https://<teu-domínio>.vercel.app` para que os fetches feitos em SSR funcionem em produção.
+2. **Migrações**
+   - Com `DATABASE_URL` a apontar para o Neon, corre `npx prisma migrate deploy --schema prisma/schema.prisma` antes de cada deploy (ou adiciona este comando antes do `next build` na Vercel) para garantir que as tabelas `User`, `Event` e `RSVP` existem.
+3. **Verificação**
+   - Depois do deploy, valida as endpoints diretamente (`/api/events`, `/api/host/events?email=...`). Se surgir algum 500, consulta o log da function correspondente em *Deployments → Functions* para ler a stack do Prisma.
+
+Sem estes passos a app não consegue criar nem listar eventos porque o Prisma não encontra a base de dados ou as tabelas necessárias.

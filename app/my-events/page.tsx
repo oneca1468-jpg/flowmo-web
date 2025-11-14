@@ -179,11 +179,12 @@ function MyEventsPageInner() {
 
                 <div className="flex justify-between items-center text-xs">
                   <Link
-                    href={`/event/${ev.id}`}
-                    className="underline text-[11px] text-zinc-300"
+                      href={`/my-events/${item.rsvpId}`}
+                      className="underline text-[11px] text-zinc-300"
                   >
-                    Ver detalhes do evento
+                    Ver detalhes da minha reserva
                   </Link>
+
                   {item.checkin && (
                     <span className="text-[11px] text-emerald-400">
                       ✅ Check-in confirmado

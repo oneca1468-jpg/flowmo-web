@@ -3,26 +3,20 @@ import { prisma } from '../../../../lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    const email = request.nextUrl.searchParams.get('email');
+    const { searchParams } = new URL(request.url);
+    const email = searchParams.get('email');
 
     if (!email) {
       return NextResponse.json(
         { error: 'Email é obrigatório.' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (!user) {
-      // Sem user = sem eventos, mas não é erro
-      return NextResponse.json({ events: [] }, { status: 200 });
-    }
-
     const rsvps = await prisma.rSVP.findMany({
-      where: { userId: user.id },
+      where: {
+        user: { email },
+      },
       include: {
         event: true,
       },
@@ -31,26 +25,26 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const events = rsvps.map((rsvp) => ({
-      rsvpId: rsvp.id,
-      estado: rsvp.estado,
-      checkin: rsvp.checkin,
-      criadoEm: rsvp.criadoEm,
+    const events = rsvps.map((r) => ({
+      rsvpId: r.id,
+      estado: r.estado,
+      checkin: r.checkin,
+      criadoEm: r.criadoEm,
       event: {
-        id: rsvp.event.id,
-        titulo: rsvp.event.titulo,
-        dataHora: rsvp.event.dataHora,
-        localTexto: rsvp.event.localTexto,
-        capacidadeMax: rsvp.event.capacidadeMax,
+        id: r.event.id,
+        titulo: r.event.titulo,
+        dataHora: r.event.dataHora,
+        localTexto: r.event.localTexto,
+        capacidadeMax: r.event.capacidadeMax,
       },
     }));
 
-    return NextResponse.json({ events }, { status: 200 });
-  } catch (err) {
-    console.error('Erro em /api/user/events:', err);
+    return NextResponse.json({ events });
+  } catch (error) {
+    console.error('Erro a carregar eventos do utilizador', error);
     return NextResponse.json(
-      { error: 'Erro interno a obter eventos do utilizador.' },
-      { status: 500 }
+      { error: 'Erro interno a carregar eventos.' },
+      { status: 500 },
     );
   }
 }
