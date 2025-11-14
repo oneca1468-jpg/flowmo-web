@@ -19,20 +19,18 @@ model User {
 }
 
 model Event {
-  id             Int       @id @default(autoincrement())
-  host   User @relation("HostEvents", fields: [hostId], references: [id])
-  hostId         Int
-  titulo         String
-  descricao      String?
-  dataHora       DateTime
-  localTexto     String
-  capacidadeMax  Int
-  criadoEm       DateTime  @default(now())
+  id            Int      @id @default(autoincrement())
+  host          User     @relation("HostEvents", fields: [hostId], references: [id])
+  hostId        Int
+  titulo        String
+  descricao     String?
+  dataHora      DateTime
+  localTexto    String
+  capacidadeMax Int
+  contactUrl    String?  // <- ESTE CAMPO TEM DE EXISTIR
+  criadoEm      DateTime @default(now())
 
-  // NOVO:
-  contactUrl     String?   // link opcional: IG, WhatsApp, site, etc.
-
-  rsvps          RSVP[]
+  rsvps         RSVP[]
 }
 
 
