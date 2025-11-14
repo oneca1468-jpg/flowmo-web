@@ -27,7 +27,7 @@ model Event {
   dataHora      DateTime
   localTexto    String
   capacidadeMax Int
-  contactUrl    String?  // <- ESTE CAMPO TEM DE EXISTIR
+  contactUrl    String?  // <- ESTE CAMPO TEM MESMO DE EXISTIR AQUI
   criadoEm      DateTime @default(now())
 
   rsvps         RSVP[]
